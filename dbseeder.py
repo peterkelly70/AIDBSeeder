@@ -68,30 +68,26 @@ def get_database_schema(connection, db_name):
 def generate_data_with_chatgpt(prompt, apikey):
     
     client = OpenAI(api_key=apikey)
-    print("Prompt: " + prompt)
+    # print("Prompt: " + prompt)
     completion = client.chat.completions.create(
       # model="gpt-3.5-turbo",
-       model="gpt-4-1106-preview",
+      model="gpt-4-1106-preview",
       messages=[
-        {"role": "system", "content": "You are a skilled database analyst, skilled in databses and generating belivable and consistent data. No extra data is needed, nor any explainations nor comments, just data, in the form of a sql insert command"},
+        {"role": "system", "content": "You are a skilled database analyst, skilled in databses and generating belivable and consistent data. No extra data is needed, nor any explanations nor comments, just data, in the form of a SQL insert command"},
         {"role": "user", "content": prompt},  
       ]
     )
-    print("######################")
-    print("AI Response:")
-    # print(completion)
-    print(completion.choices[0].message.content)
-    #print(completion.choices[0])
-    #print(type(completion.choices[0]))    
+    # print("######################")
+    # print("AI Response:")
+    # print(completion.choices[0].message.content)
     # Parse the content of the message as JSON
-    #generated_data = json.loads(completion.choices[0].message['content'])
     generated_data=completion.choices[0].message.content
     return generated_data
 
 
   # Main execution
 def main():
-  dbname = 'jellinbah_dev'
+  dbname = 'database_name'
     
   # API Key for ChatGPT
   api_key = "yourkeygoeshere"  # Replace with your actual API key
@@ -106,22 +102,14 @@ def main():
     # Process the schema and generate SQL code
     for table, columns in schema.items():
       # Construct a prompt based on the table and its columns
-      print("######################")
-      print(table+":"+str(columns))  # Add this line
+      # print("######################")
+      # print(table+":"+str(columns))  # Add this line
       columns_prompt=str(columns)
-      # columns_prompt = ', '.join([f"{column}:{datatype}" for column, datatype in columns])
       prompt = f"For Table:{table}, Given this data structure, {columns_prompt}, generate 10 lines of realistic and consistent data."
       # Use ChatGPT API to generate data
-      # generated_data = generate_data_with_chatgpt(prompt, api_key)
       sql_code = generate_data_with_chatgpt(prompt, api_key)
-      # Construct SQL insert statements
-      # for row in generated_data:
-      #    columns_list = ', '.join(columns.keys())
-      #    values_list = ', '.join([f"'{value.strip()}'" for value in row.values()])
-      # sql_code += f"INSERT INTO {table} ({columns_list}) VALUES ({values_list});\n"
-
-  # Output the generated SQL code
-  print(sql_code)
+      # Output the generated SQL code
+      print(sql_code)
   # Close the connection
   connection.close()
 
