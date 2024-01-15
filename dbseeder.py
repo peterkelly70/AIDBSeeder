@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 #########################################
 # Database Seeding Script
 ###########################################
@@ -91,11 +91,13 @@ def generate_data_with_chatgpt(prompt, apikey):
 def main():
   # Load environment variables from .env file
   load_dotenv()  
-  # API Key for ChatGPT
+  
+  # Get environment variables
+  # TODO: Add further DB Settings to .env
   api_key = os.getenv("OPENAI_API_KEY")
   dbname = os.getenv("DB_NAME")
-  # Connect to the database
-  # # Create a database connection
+  
+  # Create a database connection
   connection = create_database_connection(dbname)
   if connection:
     # Retrieve the database schema
