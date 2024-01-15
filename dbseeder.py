@@ -9,8 +9,10 @@ import random
 import requests 
 import mysql.connector
 import json
+import dotenv
 import openai 
 from openai import OpenAI
+from dotenv import load_dotenv
 
 
 # Function to parse command line arguments
@@ -77,24 +79,20 @@ def generate_data_with_chatgpt(prompt, apikey):
         {"role": "user", "content": prompt},  
       ]
     )
-    print("######################")
-    print("AI Response:")
-    # print(completion)
-    print(completion.choices[0].message.content)
-    #print(completion.choices[0])
-    #print(type(completion.choices[0]))    
+    
+    # print(completion.choices[0].message.content)
     # Parse the content of the message as JSON
-    #generated_data = json.loads(completion.choices[0].message['content'])
     generated_data=completion.choices[0].message.content
     return generated_data
 
 
   # Main execution
 def main():
-  dbname = 'jellinbah_dev'
-    
+  # Load environment variables from .env file
+  load_dotenv()  
   # API Key for ChatGPT
-  api_key = "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"  # Replace with your actual API key
+  api_key = os.getenv("OPENAI_API_KEY")
+  dbname = os.getenv("DB_NAME")
   # Connect to the database
   # # Create a database connection
   connection = create_database_connection(dbname)
@@ -106,24 +104,17 @@ def main():
     # Process the schema and generate SQL code
     for table, columns in schema.items():
       # Construct a prompt based on the table and its columns
-      print("######################")
-      print(table+":"+str(columns))  # Add this line
       columns_prompt=str(columns)
       # columns_prompt = ', '.join([f"{column}:{datatype}" for column, datatype in columns])
       prompt = f"For Table:{table}, Given this data structure, {columns_prompt}, generate 10 lines of realistic and consistent data."
       # Use ChatGPT API to generate data
-      # generated_data = generate_data_with_chatgpt(prompt, api_key)
       sql_code = generate_data_with_chatgpt(prompt, api_key)
-      # Construct SQL insert statements
-      # for row in generated_data:
-      #    columns_list = ', '.join(columns.keys())
-      #    values_list = ', '.join([f"'{value.strip()}'" for value in row.values()])
-      # sql_code += f"INSERT INTO {table} ({columns_list}) VALUES ({values_list});\n"
-
-  # Output the generated SQL code
-  print(sql_code)
-  # Close the connection
-  connection.close()
+      # Output the generated SQL code
+      print(sql_code)
+      # Close the connection
+      connection.close()
+    else:
+      print("No database connection. Exiting...")
 
 if __name__ == "__main__":
     main()

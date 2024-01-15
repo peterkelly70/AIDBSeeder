@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Deactivate the virtual environment
+echo "Deactivating virtual environment (if activated)..."
+deactivate
