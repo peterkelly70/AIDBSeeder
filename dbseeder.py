@@ -94,7 +94,7 @@ def main():
   dbname = 'jellinbah_dev'
     
   # API Key for ChatGPT
-  api_key = "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"  # Replace with your actual API key
+  api_key = "yourkeygoeshere"  # Replace with your actual API key
   # Connect to the database
   # # Create a database connection
   connection = create_database_connection(dbname)
